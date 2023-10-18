@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task Manager</title>
+</head>
+<body>
+    <h1>Task Manager</h1>
+
+    <input type="text" id="taskTitle" placeholder="Task Title">
+    <input type="number" id="taskId" placeholder="Task ID">
+    <button id="addTask">Add Task</button>
+    <button id="moveToCompleted">Move to Completed</button>
+    <button id="eraseCompletedTask">Erase Completed Task</button>
+
+    <div>
+        <h2>Tasks</h2>
+        <ul id="taskList">
+            <!-- Task items will be added here -->
+        </ul>
+    </div>
+
+    <div>
+        <h2>Completed Tasks</h2>
+        <ul id="completedTaskList">
+            <!-- Completed task items will be added here -->
+        </ul>
+    </div>
+
+    <script type="module">
+        import { TaskManager } from './src/index.ts';
+        const taskManager = new TaskManager();
+        
+        const taskTitleInput = document.getElementById("taskTitle");
+        const taskIdInput = document.getElementById("taskId");
+        const addTaskButton = document.getElementById("addTask");
+        const moveToCompletedButton = document.getElementById("moveToCompleted");
+        const eraseCompletedTaskButton = document.getElementById("eraseCompletedTask");
+        const taskList = document.getElementById("taskList");
+        const completedTaskList = document.getElementById("completedTaskList");
+
+        addTaskButton.addEventListener("click", () => {
+            const title = taskTitleInput.value;
+            const id = parseInt(taskIdInput.value);
+            taskManager.addNewTask(title, id);
+            displayTasks();
+        });
+
+        moveToCompletedButton.addEventListener("click", () => {
+            const id = parseInt(taskIdInput.value);
+            taskManager.moveToCompleted(id);
+            displayTasks();
+        });
+
+        eraseCompletedTaskButton.addEventListener("click", () => {
+            const id = parseInt(taskIdInput.value);
+            taskManager.eraseCompletedTask(id);
+            displayTasks();
+        });
+
+        function displayTasks() {
+            taskList.innerHTML = "";
+            completedTaskList.innerHTML = "";
+
+            taskManager.tasks.forEach((task) => {
+                if (task) {
+                    const li = document.createElement("li");
+                    li.textContent = `ID: ${task.id}, Title: ${task.title}`;
+                    taskList.appendChild(li);
+                }
+            });
+
+            taskManager.completedTasks.forEach((task) => {
+                const li = document.createElement("li");
+                li.textContent = `ID: ${task.id}, Title: ${task.title}`;
+                completedTaskList.appendChild(li);
+            });
+
+            taskTitleInput.value = "";
+            taskIdInput.value = "";
+        }
+
+        displayTasks();
+    </script>
+</body>
+</html>
